@@ -24,7 +24,7 @@ class ButtonWatcher:
 	def watch_buttons(self):
 		# We well repeatedly enter watch_buttons if the button/keyboard has disconnected
 		# as happens after x minutes with the bluetooth button.
-		logger.info('Mediabutton waiting for button press. Button: {}'.format(self._button_name))
+		# logger.info('Mediabutton waiting for button press. Button: {}'.format(self._button_name))
 
 		try:
 			# Get all the input devices
