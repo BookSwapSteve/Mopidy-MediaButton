@@ -47,43 +47,52 @@ class ButtonWatcher:
 							data = evdev.categorize(event)  # Save the event temporarily to introspect it
 
 							if data.keystate == 1:  # Down events only
-								if data.keycode == "KEY_VOLUMEUP":
-									logger.info("Volume Up")
-									volume = self.core.MixerController.get_volume()
-									volume = volume +1
-									if volume > 100:
-										volume = 100
-									self.core.MixerController.set_volume(volume)
-								elif data.keycode == "KEY_VOLUMEDOWN":
-									logger.info("Volume Down")
-									volume = self.core.MixerController.get_volume()
-									volume = volume - 1
-									if volume < 0:
-										volume = 0
-									self.core.MixerController.set_volume(volume)
-								elif data.keycode == "KEY_PLAYPAUSE":
-									logger.info("Play/Payse")
-									state = self.core.PlaybackController.get_state()
-									if state == "PLAYING":
-										self.core.PlaybackController.pause()
-									elif state == "PAUSED":
-										self.core.PlaybackController.resume()
-									elif state == "STOPPED":
-										logger.info("TODO: Start playing")
-									else:
-										logger.warn("Unknown playback state: {0}".format(state))
+								self.handle_button_press(data)
 
-								else:
-									logger.info("Unhandled Keycode: {}".format(data.keycode))
-									# PlaybackController.next()
-									# PlaybackController.previous()
-
-								#if data.keycode in watched_keys:
-								#	logger.info("Button pressed: {}".format(data.keycode))
 
 		except Exception, e:
 			logger.warn("Lost keyboard connection. Restarting search")
 			pass
+
+	def handle_button_press(self, data):
+		try:
+			if data.keycode == "KEY_VOLUMEUP":
+				logger.info("Volume Up")
+				volume = self.core.mixer.get_volume()
+				volume = volume + 1
+				if volume > 100:
+					volume = 100
+				self.core.mixer.set_volume(volume)
+			elif data.keycode == "KEY_VOLUMEDOWN":
+				logger.info("Volume Down")
+				volume = self.core.mixer.get_volume()
+				volume = volume - 1
+				if volume < 0:
+					volume = 0
+				self.core.mixer.set_volume(volume)
+			elif data.keycode == "KEY_PLAYPAUSE":
+				logger.info("Play/Payse")
+				state = self.core.playback.get_state()
+				if state == "PLAYING":
+					self.core.playback.pause()
+				elif state == "PAUSED":
+					self.core.playback.resume()
+				elif state == "STOPPED":
+					logger.info("TODO: Start playing")
+				else:
+					logger.warn("Unknown playback state: {0}".format(state))
+
+			else:
+				logger.info("Unhandled Keycode: {}".format(data.keycode))
+		# PlaybackController.next()
+		# PlaybackController.previous()
+
+		# if data.keycode in watched_keys:
+		#	logger.info("Button pressed: {}".format(data.keycode))
+		except Exception, e:
+			logger.warn(e)
+			logger.exception("Error handling key press")
+
 
 	def playlists_loaded(self):
 		logger.info('Playlists loaded')
