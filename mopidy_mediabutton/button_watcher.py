@@ -20,6 +20,8 @@ class ButtonWatcher:
 		self._button_name = button_name  # "BT005"
 
 	def watch_buttons(self):
+		# We well repeatedly enter watch_buttons if the button/keyboard has disconnected
+		# as happens after x minutes with the bluetooth button.
 		logger.info('Mediabutton waiting for button press. Button: {}'.format(self._button_name))
 
 		try:
@@ -68,9 +70,6 @@ class ButtonWatcher:
 										self.core.PlaybackController.resume()
 									elif state == "STOPPED":
 										logger.info("TODO: Start playing")
-										# PlaybackController.play(tl_track=None, tlid=None)
-										#  tl_track (mopidy.models.TlTrack or None) – track to play
-										#  tlid (int or None) – TLID of the track to play
 									else:
 										logger.warn("Unknown playback state: {0}".format(state))
 
