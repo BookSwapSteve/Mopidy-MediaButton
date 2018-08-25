@@ -22,9 +22,12 @@ class MediaButtonExtension(ext.Extension):
         schema['default_playlist'] = config.String()
         schema['button_name'] = config.String()
 
-
         return schema
 
     def setup(self, registry):
+        # Register a frontend
+        from .frontend import MediaButtonFrontend
+        registry.add('frontend', MediaButtonFrontend)
+
         from .backend import MediaButtonBackend
         registry.add('backend', MediaButtonBackend)

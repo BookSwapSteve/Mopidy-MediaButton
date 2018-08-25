@@ -28,6 +28,7 @@ setup(
         'Pykka >= 1.1',
         'requests >= 2.0',
         'cachetools >= 1.0',
+        'evdev >= 1.0.0'
     ],
     entry_points={
         'mopidy.ext': [
