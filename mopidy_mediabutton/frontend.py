@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 class MediaButtonFrontend(pykka.ThreadingActor, core.CoreListener):
 	def __init__(self, config, core):
 		super(MediaButtonFrontend, self).__init__()
+		logger.info('MediaButton Frontend init.')
 		self.core = core
 		self.config = config
 		self.running = False

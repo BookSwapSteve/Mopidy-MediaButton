@@ -43,9 +43,44 @@ class ButtonWatcher:
 					for event in device.read_loop():
 						if event.type == evdev.ecodes.EV_KEY:
 							data = evdev.categorize(event)  # Save the event temporarily to introspect it
+
 							if data.keystate == 1:  # Down events only
-								if data.keycode in watched_keys:
-									logger.info("Button pressed: {}".format(data.keycode))
+								if data.keycode == "KEY_VOLUMEUP":
+									logger.info("Volume Up")
+									volume = self.core.MixerController.get_volume()
+									volume = volume +1
+									if volume > 100:
+										volume = 100
+									self.core.MixerController.set_volume(volume)
+								elif data.keycode == "KEY_VOLUMEDOWN":
+									logger.info("Volume Down")
+									volume = self.core.MixerController.get_volume()
+									volume = volume - 1
+									if volume < 0:
+										volume = 0
+									self.core.MixerController.set_volume(volume)
+								elif data.keycode == "KEY_PLAYPAUSE":
+									logger.info("Play/Payse")
+									state = self.core.PlaybackController.get_state()
+									if state == "PLAYING":
+										self.core.PlaybackController.pause()
+									elif state == "PAUSED":
+										self.core.PlaybackController.resume()
+									elif state == "STOPPED":
+										logger.info("TODO: Start playing")
+										# PlaybackController.play(tl_track=None, tlid=None)
+										#  tl_track (mopidy.models.TlTrack or None) – track to play
+										#  tlid (int or None) – TLID of the track to play
+									else:
+										logger.warn("Unknown playback state: {0}".format(state))
+
+								else:
+									logger.info("Unhandled Keycode: {}".format(data.keycode))
+									# PlaybackController.next()
+									# PlaybackController.previous()
+
+								#if data.keycode in watched_keys:
+								#	logger.info("Button pressed: {}".format(data.keycode))
 
 		except Exception, e:
 			logger.warn("Lost keyboard connection. Restarting search")

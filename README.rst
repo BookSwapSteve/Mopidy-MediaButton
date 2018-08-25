@@ -49,7 +49,9 @@ If no music is paused/playing, pressing play on the media button will play the d
     default_playlist = PressPlayOnMediaButton
     button_name = BT005
 
+This may require additional permissions for the button event watcher.
 
+run as sudo...
 
 Usage
 =====
