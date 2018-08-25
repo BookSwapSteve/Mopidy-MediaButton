@@ -7,6 +7,8 @@ import logging
 logger = logging.getLogger(__name__)
 from mopidy import backend, exceptions
 
+from mopidy.core import PlaybackState
+
 watched_keys = {"KEY_PLAYPAUSE": "playpause",
                 "KEY_NEXTSONG": "next",
                 "KEY_PREVIOUSSONG": "previous",
@@ -58,26 +60,38 @@ class ButtonWatcher:
 		try:
 			if data.keycode == "KEY_VOLUMEUP":
 				logger.info("Volume Up")
-				volume = self.core.mixer.get_volume()
+				volume = self.core.mixer.get_volume().get()
+				if volume == None:
+					return
+
 				volume = volume + 1
 				if volume > 100:
 					volume = 100
 				self.core.mixer.set_volume(volume)
+
 			elif data.keycode == "KEY_VOLUMEDOWN":
 				logger.info("Volume Down")
-				volume = self.core.mixer.get_volume()
+				volume = self.core.mixer.get_volume().get()
+				logger.info("Current volume: {}".format(volume))
+
+				if volume == None:
+					return
+
 				volume = volume - 1
 				if volume < 0:
 					volume = 0
 				self.core.mixer.set_volume(volume)
+
 			elif data.keycode == "KEY_PLAYPAUSE":
 				logger.info("Play/Payse")
-				state = self.core.playback.get_state()
-				if state == "PLAYING":
+
+				state = self.core.playback.get_state().get()
+
+				if state ==  PlaybackState.PLAYING:
 					self.core.playback.pause()
-				elif state == "PAUSED":
+				elif state ==  PlaybackState.PAUSED:
 					self.core.playback.resume()
-				elif state == "STOPPED":
+				elif state == PlaybackState.STOPPED:
 					logger.info("TODO: Start playing")
 				else:
 					logger.warn("Unknown playback state: {0}".format(state))
