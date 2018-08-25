@@ -19,6 +19,26 @@ Install the Mopidy-MediaButton extension by running::
 
     pip install mopidy-mediabutton
 
+Development
+===========
+
+Clone/download from git and install by using::
+
+    # python setup.py develop
+
+    or
+
+    python setup.py install
+
+Restart Mopidy::
+
+    # systemctl restart mopidy
+
+View logs::
+    $ nano /var/log/mopidy/mopidy.log
+
+Edit configuration
+    # nano /etc/mopidy/mopidy.conf
 
 Configuration
 =============
